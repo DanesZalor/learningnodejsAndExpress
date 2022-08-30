@@ -21,7 +21,7 @@ module.exports.validate = function (reqparams) {
     return errors;
 }
 
-module.exports.getAll = function () {
+module.exports.getAll = () => {
 
     return new Promise((resolve, reject) => {
         SQLConn.Query("SELECT * FROM account", (result) => {
@@ -30,10 +30,23 @@ module.exports.getAll = function () {
     });
 };
 
-module.exports.get = function (user, onSuccess) {
-    SQLConn.Query(`SELECT * FROM account WHERE username='${user}'`, onSuccess);
-};
 
-module.exports.create = function (onSuccess, params) {
+module.exports.get = (user) => {
 
+    return new Promise((resolve, reject) => {
+        SQLConn.Query(`SELECT * FROM account WHERE username='${user}'`, (result) => {
+            resolve(result);
+        });
+    });
+}
+
+
+
+module.exports.create = function (username, password) {
+
+    return new Promise((resolve, reject) => {
+        SQLConn.Query(`INSERT INTO account (username, password) VALUES ('${username}', '${password}')`, (result) => {
+            resolve({ success: true });
+        });
+    })
 }
