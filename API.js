@@ -10,11 +10,11 @@ Express.get('/api/accounts', async (req, res) => {
     res.status(200).send(result);
 });
 
-Express.get('/api/account/:id', async (req, res) => {
+Express.get('/api/account/:username', async (req, res) => {
 
-    let result = await Accounts.get(req.params.id);
+    let result = await Accounts.get(req.params.username);
 
-    if (result.length == 0) res.status(404).send({ msg: `${req.params.id} not found` });
+    if (result.length == 0) res.status(404).send({ msg: `${req.params.username} not found` });
     else res.status(200).send(result);
 });
 
@@ -40,8 +40,25 @@ Express.post('/api/accounts', async (req, res) => {
     }
 });
 
-Express.delete('/api/accounts', async (req, res) => {
+Express.delete('/api/account/:username', async (req, res) => {
 
+    if (req.body.password != null) {
+
+        let result = await Accounts.get(req.params.username);
+
+        if (result.length == 0)
+            res.status(404).send({ error: `${req.params.username} not found` });
+
+        else if (req.body.password != result[0].password)
+            res.status(401).send({ error: 'wrong password' });
+
+        else {
+            await Accounts.delete(req.params.username, req.body.password);
+            res.status(200).send({ msg: `${req.params.username} deleted` });
+        }
+
+    } else
+        res.status(401).send({ error: 'password required' });
 });
 
 Express.listen(8000, function () {

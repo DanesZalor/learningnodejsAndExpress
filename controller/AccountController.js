@@ -30,7 +30,6 @@ module.exports.getAll = () => {
     });
 };
 
-
 module.exports.get = (user) => {
 
     return new Promise((resolve, reject) => {
@@ -40,12 +39,19 @@ module.exports.get = (user) => {
     });
 }
 
-
-
 module.exports.create = function (username, password) {
 
     return new Promise((resolve, reject) => {
         SQLConn.Query(`INSERT INTO account (username, password) VALUES ('${username}', '${password}')`, (result) => {
+            resolve({ success: true });
+        });
+    })
+}
+
+module.exports.delete = function (username, password) {
+
+    return new Promise((resolve, reject) => {
+        SQLConn.Query(`DELETE FROM account WHERE username='${username}' AND password='${password}'`, (result) => {
             resolve({ success: true });
         });
     })
