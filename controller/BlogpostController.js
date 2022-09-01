@@ -15,4 +15,10 @@ module.exports.get = async (user, time) => {
 
 module.exports.create = async (user, content) => {
 
+    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    return await SQLConn.Query(`INSERT INTO blogpost (postTime, poster, content) VALUES ('${timestamp}', '${user}', '${content}')`);
+}
+
+module.exports.delete = async (user, timestamp) => {
+    return await SQLConn.Query(`DELETE FROM blogpost WHERE poster='${user}' AND postTime='${timestamp}'`);
 }
