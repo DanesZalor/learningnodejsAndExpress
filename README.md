@@ -17,4 +17,20 @@ CREATE TABLE blogpost {
 };
 ```
 
+### Project Structure
+```
+ProjectFolder
+├── api
+│   ├── AccountAPI.js
+│   ├── BlogpostAPI.js
+│   └── index.js
+├── controller
+│   ├── AccountController.js
+│   ├── BlogpostController.js
+│   └── sqlconn.js
+├── index.js
+```
+`controller/` contains `___Controller` modules that will be responsible for communicating with the assigned table. `controller/sqlconn.js` is just a module for submitting queries which the controller modules will use.<br>
+
+`api/` contains modules that contains the routing segregated by resource. API modules use Controller modules.
 
