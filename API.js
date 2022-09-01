@@ -26,17 +26,12 @@ Express.post('/api/accounts', async (req, res) => {
         res.status(406).send(msg.errors);
 
     else {
-
-        if ((await Accounts.get(req.body.username)).length > 0)
-            res.status(400).send({ error: `${req.body.username} already exists.` });
-
-        else {
-
-            if (await Accounts.create(req.body.username, req.body.password).success)
-                res.status(201).send({ msg: 'registered successfully' });
-            else
-                res.status(500).send({ msg: 'something went wrong' });
-        }
+        console.log('watf');
+        let result = await Accounts.create(req.body.username, req.body.password);
+        if (result.success)
+            res.status(201).send({ msg: `user:${req.body.username} created successfully` });
+        else
+            res.status(result.status).send({ error: result.error });
     }
 });
 
@@ -44,18 +39,13 @@ Express.delete('/api/account/:username', async (req, res) => {
 
     if (req.body.password != null) {
 
-        let result = await Accounts.get(req.params.username);
+        let result = await Accounts.delete(req.params.username, req.body.password);
 
-        if (result.length == 0)
-            res.status(404).send({ error: `${req.params.username} not found` });
+        if (!result.success)
+            res.status(result.status).send({ error: result.error });
+        else
+            res.status(200).send({ msg: `${req.params.username} deleted successfully` });
 
-        else if (req.body.password != result[0].password)
-            res.status(401).send({ error: 'wrong password' });
-
-        else {
-            await Accounts.delete(req.params.username, req.body.password);
-            res.status(200).send({ msg: `${req.params.username} deleted` });
-        }
 
     } else
         res.status(401).send({ error: 'password required' });

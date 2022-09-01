@@ -21,38 +21,38 @@ module.exports.validate = function (reqparams) {
     return errors;
 }
 
-module.exports.getAll = () => {
-
-    return new Promise((resolve, reject) => {
-        SQLConn.Query("SELECT * FROM account", (result) => {
-            resolve(result);
-        });
-    });
+module.exports.getAll = async () => {
+    return await SQLConn.Query("SELECT * FROM account");
 };
 
-module.exports.get = (user) => {
+module.exports.get = async (user) => {
 
-    return new Promise((resolve, reject) => {
-        SQLConn.Query(`SELECT * FROM account WHERE username='${user}'`, (result) => {
-            resolve(result);
-        });
-    });
+    let result = await SQLConn.Query(`SELECT * FROM account WHERE username='${user}'`);
+    return result.length == 0 ? {} : result[0];
 }
 
-module.exports.create = function (username, password) {
+module.exports.create = async (username, password) => {
 
-    return new Promise((resolve, reject) => {
-        SQLConn.Query(`INSERT INTO account (username, password) VALUES ('${username}', '${password}')`, (result) => {
-            resolve({ success: true });
-        });
-    })
+    if (JSON.stringify(await this.get(username)) == "{}") {
+        await SQLConn.Query(`INSERT INTO account (username, password) VALUES ('${username}', '${password}')`);
+        return { success: true };
+    } else
+        return { success: false, status: 403, error: `${username} already exists` };
+
 }
 
-module.exports.delete = function (username, password) {
+module.exports.delete = async (username, password) => {
 
-    return new Promise((resolve, reject) => {
-        SQLConn.Query(`DELETE FROM account WHERE username='${username}' AND password='${password}'`, (result) => {
-            resolve({ success: true });
-        });
-    })
+    let result = await this.get(username);
+
+    if (JSON.stringify(result) == "{}")
+        return { success: false, status: 404, error: `${username} does not exist` };
+
+    else if (result.password != password)
+        return { success: false, status: 401, error: "wrong password" };
+
+    else {
+        await SQLConn.Query(`DELETE FROM account WHERE username='${username}' AND PASSWORD='${password}'`);
+        return { success: true };
+    }
 }
