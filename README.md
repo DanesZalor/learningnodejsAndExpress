@@ -34,3 +34,9 @@ ProjectFolder
 
 `api/` contains modules that contains the routing segregated by resource. API modules use Controller modules.
 
+### API endpoints
+|path||
+|-|-|
+|GET `/api/accounts`|all accounts and their details|
+|GET `/api/account/<username>`|gets the account details of the specified user|
+|POST `/api/accounts`<br> <sub><sup>{username:str password:str confirmPassword:str}</sup></sub>|creates a new user with the specified details|
