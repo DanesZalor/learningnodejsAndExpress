@@ -20,13 +20,12 @@ Express.get('/api/account/:username', async (req, res) => {
 
 Express.post('/api/accounts', async (req, res) => {
 
-    let msg = { errors: Accounts.validate(req.body) };
+    let errors = Accounts.validate(req.body);
 
-    if (msg.errors.length > 0)
-        res.status(406).send(msg.errors);
+    if (errors.length > 0)
+        res.status(406).send({ errors: errors });
 
     else {
-        console.log('watf');
         let result = await Accounts.create(req.body.username, req.body.password);
         if (result.success)
             res.status(201).send({ msg: `user:${req.body.username} created successfully` });
