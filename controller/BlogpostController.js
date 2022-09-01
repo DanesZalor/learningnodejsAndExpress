@@ -1,17 +1,16 @@
 const SQLConn = require('./sqlconn.js');
-const Accounts = require('./AccountController.js');
 
 module.exports.getAll = async () => {
     return await SQLConn.Query("SELECT * FROM blogpost");
 }
 
-module.exports.get = async (user) => {
+module.exports.getAllFrom = async (user) => {
 
-    if (JSON.stringify(await Accounts.get(user)) == "{}")
-        return { error: `${user} does not exist`, status: 404 };
+    return await SQLConn.Query(`SELECT * FROM blogpost WHERE poster='${user}'`);
+}
 
-    else
-        return await SQLConn.Query(`SELECT * FROM blogpost WHERE poster='${user}'`);
+module.exports.get = async (user, time) => {
+    return await SQLConn.Query(`SELECT * FROM blogpost WHERE poster='${user}' AND postTime='${time}'`);
 }
 
 module.exports.create = async (user, content) => {
