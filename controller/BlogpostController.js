@@ -11,5 +11,9 @@ module.exports.get = async (user) => {
         return { error: `${user} does not exist`, status: 404 };
 
     else
-        return await SQLConn.Query(`SELECT * FROM blogpost WHERE user='${user}'`);
+        return await SQLConn.Query(`SELECT * FROM blogpost WHERE poster='${user}'`);
+}
+
+module.exports.create = async (user, content) => {
+
 }
