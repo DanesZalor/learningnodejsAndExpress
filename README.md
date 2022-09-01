@@ -8,13 +8,13 @@ CREATE TABLE account (
     PRIMARY KEY (username)
 );
 
-CREATE TABLE blogpost {
+CREATE TABLE blogpost (
     postTime datetime,
     poster varchar(50),
     content varchar(1000),
     FOREIGN KEY (poster) REFERENCES account (username),
     PRIMARY KEY (postTime, poster)
-};
+);
 ```
 
 ### Project Structure
